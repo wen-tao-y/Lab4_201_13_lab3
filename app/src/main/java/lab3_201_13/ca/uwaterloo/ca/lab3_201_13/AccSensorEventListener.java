@@ -1,9 +1,21 @@
 package lab3_201_13.ca.uwaterloo.ca.lab3_201_13;
 
+import android.hardware.SensorEventListener;
+import android.widget.TextView;
+import java.io.FileOutputStream;
+
+import java.io.IOException;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+
+import ca.uwaterloo.sensortoy.LineGraphView;
+
+
 /**
  * Created by Matthew on 2016-06-24.
  */
-public class AccSensorEventListener {
+public class AccSensorEventListener implements SensorEventListener {
     public enum stepState{
         atRest, startStep, stepPeak, stepDescent, stepRebound
     }
@@ -47,7 +59,7 @@ public class AccSensorEventListener {
     private String sensorRecordValString = "x: 0 y: 0 z: 0";
     private String displacementString = "Displacement: \n";
 
-    public AccelSensorEventListener(Context _context, TextView outputView, TextView _stepView,LineGraphView _graph, FileOutputStream y,FileOutputStream  z, FileOutputStream time, FileOutputStream rotation,boolean _recordStats , OrientationManager orientationManager )
+    public AccSensorEventListener(Context _context, TextView outputView, TextView _stepView,LineGraphView _graph, FileOutputStream y,FileOutputStream  z, FileOutputStream time, FileOutputStream rotation,boolean _recordStats , OrientationManager orientationManager )
     {
         context = _context;
         recordStats = _recordStats;
