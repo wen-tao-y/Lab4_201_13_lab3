@@ -31,10 +31,7 @@ public class AccSensorEventListener implements SensorEventListener {
 
     private stepState currentState;
 
-    private FileOutputStream ZValStream;
-    private FileOutputStream YValStream;
-    private FileOutputStream TimeValStream;
-    private FileOutputStream RValStream;
+
 
 
     private int stepCount = 0;
@@ -59,7 +56,7 @@ public class AccSensorEventListener implements SensorEventListener {
     private String sensorRecordValString = "x: 0 y: 0 z: 0";
     private String displacementString = "Displacement: \n";
 
-    public AccSensorEventListener(Context _context, TextView outputView, TextView _stepView,LineGraphView _graph, FileOutputStream y,FileOutputStream  z, FileOutputStream time, FileOutputStream rotation,boolean _recordStats , OrientationManager orientationManager )
+    public AccSensorEventListener(Context _context, TextView outputView, TextView _stepView,LineGraphView _graph, boolean _recordStats , OrientationManager orientationManager )
     {
         context = _context;
         recordStats = _recordStats;
@@ -68,10 +65,7 @@ public class AccSensorEventListener implements SensorEventListener {
         graph = _graph;
         currentState = stepState.atRest;
 
-        ZValStream = y;
-        YValStream = z;
-        TimeValStream = time;
-        RValStream = rotation;
+
 
         this.orientationManager = orientationManager;
 
@@ -203,15 +197,6 @@ public class AccSensorEventListener implements SensorEventListener {
         // low pass filter graph
         graph.addPoint(lowPassOut);
 
-        if (recordStats == true) {
-            try {
-                ZValStream.write(String.format("%.2f \n" ,lowPassOut[2]).getBytes());
-                YValStream.write(String.format("%.2f \n" ,lowPassOut[1]).getBytes());
-                RValStream.write(String.format("%.2f \n", currentHeading).getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
 
 
         switch (currentState)
@@ -255,13 +240,7 @@ public class AccSensorEventListener implements SensorEventListener {
                         // time for step was less than 90ms
                         // unreasonable for human being, reset state without updating counter
                         stepCount++;
-                        if (recordStats){
-                            try {
-                                TimeValStream.write(String.format("%d\n", timeElapsed).getBytes() );
-                            } catch (IOException e) {
-                                // oh dear, something went wrong!
-                            }
-                        }
+
 
                         double headingNS = Math.cos((double)currentHeading);
                         double headingEW = Math.sin((double)currentHeading);
