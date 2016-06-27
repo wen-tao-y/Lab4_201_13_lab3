@@ -27,15 +27,15 @@ public class AccSensorEventListener implements SensorEventListener {
 
     private OrientationManager orientationManager;
 
-    private boolean overflow = false;
+    private boolean acceTooGreat = false;
 
     private stepState currentState;
 
 
 
 
-    private int stepCount = 0;
-    private long timeElapsed;
+    private int step = 0;
+    private long totalTime;
     private float initialAzimuth = 0 ;
     private final int maxSampleCount = 4;
     private float[] azimuthSamples = new float[maxSampleCount];
@@ -45,7 +45,7 @@ public class AccSensorEventListener implements SensorEventListener {
 
     private float distanceN = 0;
     private float distanceE = 0;
-    private float currentHeading = 0; // current orienation in radians
+    private float direction = 0; // current orienation in radians
 
 
     private float[] lowPassOut;
@@ -56,14 +56,14 @@ public class AccSensorEventListener implements SensorEventListener {
 
     private String displacementString = "Displacement: \n";
 
-    public AccSensorEventListener( TextView outputView, TextView _stepView,LineGraphView _graph , OrientationManager orientationManager )
+    public AccSensorEventListener( TextView outputView, TextView stepView,LineGraphView graph , OrientationManager orientationManager )
     {
 
 
-        output = outputView;
-        stepView = _stepView;
-        graph = _graph;
-        currentState = stepState.atRest;
+        this.output = outputView;
+        this.stepView = stepView;
+        this.graph = graph;
+        this.currentState = stepState.atRest;
 
 
 
@@ -99,12 +99,12 @@ public class AccSensorEventListener implements SensorEventListener {
         // distance is averaged, orientation becomes
 
         if (initialAzimuth == 0) {
-            currentHeading = orientationManager.getAzimuth();
+            direction = orientationManager.getAzimuth();
         }
 
 
         if (!initialSet) {
-            initialAzimuth = currentHeading;
+            initialAzimuth = direction;
             initialSet = true;
             return;
         }
@@ -138,19 +138,19 @@ public class AccSensorEventListener implements SensorEventListener {
 
                 if (Math.abs(avgDiff) > 1) {
                     // don't smooth if user is detected to be changing drastic direction (initially)
-                    currentHeading = initialAzimuth + avgDiff;
+                    direction = initialAzimuth + avgDiff;
                 } else {
                     // smooth if user is heading the same relative direction
-                    currentHeading += ((initialAzimuth + avgDiff) - currentHeading) / 2.5f;
+                    direction += ((initialAzimuth + avgDiff) - direction) / 2.5f;
                 }
 
 
                 // technically not  needed
-                while (currentHeading > Math.PI) {
-                    currentHeading -= 2 * Math.PI;
+                while (direction > Math.PI) {
+                    direction -= 2 * Math.PI;
                 }
-                while (currentHeading < -3.141592654) {
-                    currentHeading += 2 * 3.14159f;
+                while (direction < -Math.PI) {
+                    direction += 2 * Math.PI;
                 }
                 sampleCount = 0;
                 initialSet = false;
@@ -167,7 +167,8 @@ public class AccSensorEventListener implements SensorEventListener {
         se.values[0] = lowPassOut[0];
         se.values[1] = lowPassOut[1];
         se.values[2] = lowPassOut[2];
-        lowPassOut[0] = currentHeading;
+        lowPassOut[0] = direction;
+        direction=orientationManager.getAzimuth();
 
 			/*
 			if ( autoCount == 2) {
@@ -193,7 +194,7 @@ public class AccSensorEventListener implements SensorEventListener {
                 updateOrientation(orientationManager.getAzimuth());
                 if ( (lowPassOut[2] > 0.35) && (Math.abs(lowPassOut[1]) > 0.1f)) {
                     currentState = stepState.startStep;
-                    timeElapsed = System.currentTimeMillis();
+                    totalTime = System.currentTimeMillis();
                 }
                 break;
             case startStep:
@@ -206,7 +207,7 @@ public class AccSensorEventListener implements SensorEventListener {
                 break;
             case stepPeak:
                 if ( lowPassOut[2] > 10.0f){
-                    overflow = true;
+                    acceTooGreat = true;
                 }
                 else if ( lowPassOut[2] < 1.3f) {
                     currentState = stepState.stepDescent;
@@ -223,35 +224,35 @@ public class AccSensorEventListener implements SensorEventListener {
                 if ( lowPassOut[2] > -0.25f) {
 
                     // how much time has passed since startStep was initiated
-                    timeElapsed = System.currentTimeMillis() - timeElapsed;
-                    if ( timeElapsed > 200 && !overflow){
+                    totalTime = System.currentTimeMillis() - totalTime;
+                    if ( totalTime > 200 && !acceTooGreat){
                         // time for step was less than 90ms
                         // unreasonable for human being, reset state without updating counter
-                        stepCount++;
+                        step++;
 
 
-                        double headingNS = Math.cos((double)currentHeading);
-                        double headingEW = Math.sin((double)currentHeading);
+                        double headingNS = Math.cos((double)direction);
+                        double headingEW = Math.sin((double)direction);
                         distanceN += headingNS;
                         distanceE += headingEW;
                     }
                     currentState = stepState.atRest;
-                    timeElapsed = 0;
-                    overflow = false;
+                    totalTime = 0;
+                    acceTooGreat = false;
 
                 }
                 break;
         }
 
-        stepView.setText(String.format("Step Count: %d" , stepCount));
+        stepView.setText(String.format("Step Count: %d" , step));
         sensorValString = String.format("\n x: %.2f y: %.2f z: %.2f", se.values[0], se.values[1], se.values[2]);
         displacementString = String.format("\nDisplacement: \n N: %.5f E: %.5f ", distanceN , distanceE );
 
-        output.setText( displacementString  + String.format("\nCurrentHeading: %f", currentHeading*(180f/3.14159f)) + sensorString+sensorValString );
+        output.setText( displacementString  + String.format("\ndirection: %f", direction*(180f/3.14159f)) + sensorString+sensorValString );
     }
 
     public void resetCounter()
     {
-        stepCount = 0;
+        step = 0;
     }
 }
