@@ -93,73 +93,71 @@ public class AccSensorEventListener implements SensorEventListener {
         return out;
     }
 
-    public void updateOrientation( float Rvalue)
-    {
+    public void updateOrientation( float Rvalue) {
         // takes an initial orientation
         // then stores the subsequent 10 samples distance from initial into an array
         // distance is averaged, orientation becomes
 
-        if ( initialAzimuth == 0) {
-            currentHeading =  orientationManager.getAzimuth();
+        if (initialAzimuth == 0) {
+            currentHeading = orientationManager.getAzimuth();
         }
 
 
-        if (!initialSet){
+        if (!initialSet) {
             initialAzimuth = currentHeading;
             initialSet = true;
             return;
         }
 
-        if ( sampleCount < maxSampleCount ) {
+        if (sampleCount < maxSampleCount) {
             azimuthSamples[sampleCount] = Rvalue - initialAzimuth;
             sampleCount++;
         } else {
 
 
-
             float sum = 0;
-            float min = 0;
-            float max = 0;
+            float min = 100f;
+            float max = -100f;
 
-            for (int i = 0; i < sampleCount; i++)
-            {
-                if (i == 0){
+            for (int i = 0; i < sampleCount; i++) {
+                if (i == 0) {
                     min = azimuthSamples[i];
                     max = azimuthSamples[i];
                 } else {
-                    if ( azimuthSamples[i] < min)
+                    if (azimuthSamples[i] < min)
                         min = azimuthSamples[i];
-                    else if ( azimuthSamples[i] > max)
+                    else if (azimuthSamples[i] > max)
                         max = azimuthSamples[i];
+
+                    sum += azimuthSamples[i];
                 }
-                sum += azimuthSamples[i];
+                sum -= min;
+                sum -= max;
+                float avgDiff = (sum / (float) (maxSampleCount - 2));
+
+
+                if (Math.abs(avgDiff) > 1) {
+                    // don't smooth if user is detected to be changing drastic direction (initially)
+                    currentHeading = initialAzimuth + avgDiff;
+                } else {
+                    // smooth if user is heading the same relative direction
+                    currentHeading += ((initialAzimuth + avgDiff) - currentHeading) / 2.5f;
+                }
+
+
+                // technically not  needed
+                while (currentHeading > Math.PI) {
+                    currentHeading -= 2 * Math.PI;
+                }
+                while (currentHeading < -3.141592654) {
+                    currentHeading += 2 * 3.14159f;
+                }
+                sampleCount = 0;
+                initialSet = false;
             }
-            sum -= min;
-            sum -= max;
-            float avgDiff = (sum/(float)(maxSampleCount-2));
 
 
-
-            if ( Math.abs(avgDiff) > 1) {
-                // don't smooth if user is detected to be changing drastic direction (initially)
-                currentHeading = initialAzimuth + avgDiff;
-            } else {
-                // smooth if user is heading the same relative direction
-                currentHeading += ((initialAzimuth + avgDiff)- currentHeading)/2.5f ;
-            }
-
-
-            // technically not  needed
-            while (currentHeading > Math.PI) {
-                currentHeading -= 2*Math.PI ;
-            }
-            while ( currentHeading < -3.141592654){
-                currentHeading += 2*3.14159f ;
-            }
-            sampleCount = 0;
-            initialSet  = false;
         }
-
 
     }
 

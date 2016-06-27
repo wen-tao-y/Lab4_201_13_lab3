@@ -11,9 +11,7 @@ import android.widget.TextView;
  */
 public class OrientationManager {
 
-    private enum Direction{
-        North, South, East, West;
-    }
+
 
     private TextView directionLabel;
     private float[] R = new float[9];
@@ -83,7 +81,6 @@ public class OrientationManager {
 
 		/* updated directionLabel to current orientation */
         directionLabel.setText(String.format("Orientation: %.2f , %.2f , %.2f", Rvalues[0]*(180.0f/(3.14159)), Rvalues[1], Rvalues[2]));
-
 
 
     }
