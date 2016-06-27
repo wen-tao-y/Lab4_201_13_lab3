@@ -63,8 +63,8 @@ public class Lab3_201_13 extends AppCompatActivity {
 
         OrientationManager orientationManager = new OrientationManager(orientation);
 
-        final SensorEventListener AccListener = new AccSensorEventListener(getApplicationContext(), AccValuesOut,stepCount,
-                graph,   true, orientationManager );
+        final SensorEventListener AccListener = new AccSensorEventListener( AccValuesOut,stepCount,
+                graph, orientationManager );
 
         final OrientationManager.GravSensorEventListener gravEventListener =  orientationManager.new GravSensorEventListener();
         final OrientationManager.MagSensorEventListener magEventListener =  orientationManager.new MagSensorEventListener();
@@ -76,7 +76,7 @@ public class Lab3_201_13 extends AppCompatActivity {
         // add clear button for class
         final Button clearButton = (Button) findViewById(R.id.b);
         clearButton.setText("Clear");
-        layout.addView(clearButton);
+
         clearButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -89,31 +89,21 @@ public class Lab3_201_13 extends AppCompatActivity {
         // add clear button for class
 
 
-        final Button pauseButton = new Button(getApplicationContext());
-        pauseButton.setText("Pause");
-
-        layout.addView(pauseButton);
-        pauseButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                try {
-
-
-                        sensorManager.registerListener(AccListener, AccSensor, SensorManager.SENSOR_DELAY_GAME);
-                        sensorManager.registerListener(gravEventListener, AccerometerSensor, SensorManager.SENSOR_DELAY_GAME);
-                        sensorManager.registerListener(magEventListener, magSensor, SensorManager.SENSOR_DELAY_GAME);
-                        pauseButton.setText("Pause");
 
 
 
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
 
-            }
-        });
+        sensorManager.registerListener(AccListener, AccSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(gravEventListener, AccerometerSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(magEventListener, magSensor, SensorManager.SENSOR_DELAY_GAME);
+
+
+
+
+
+
+
+
         layout.addView(map);
         map.setVisibility(View.VISIBLE);
 

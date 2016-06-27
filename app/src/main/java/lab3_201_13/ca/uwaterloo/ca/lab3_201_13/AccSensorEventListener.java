@@ -26,7 +26,7 @@ public class AccSensorEventListener implements SensorEventListener {
 
 
     private OrientationManager orientationManager;
-    private boolean recordStats = false;
+
     private boolean overflow = false;
 
     private stepState currentState;
@@ -41,7 +41,7 @@ public class AccSensorEventListener implements SensorEventListener {
     private float[] azimuthSamples = new float[maxSampleCount];
     private boolean initialSet = false;
     private int sampleCount = 0;
-    private int autoCount = 0;
+
 
     private float distanceN = 0;
     private float distanceE = 0;
@@ -49,17 +49,17 @@ public class AccSensorEventListener implements SensorEventListener {
 
 
     private float[] lowPassOut;
-    private Context context;
+
 
     private String sensorString;
     private String sensorValString;
-    private String sensorRecordValString = "x: 0 y: 0 z: 0";
+
     private String displacementString = "Displacement: \n";
 
-    public AccSensorEventListener(Context _context, TextView outputView, TextView _stepView,LineGraphView _graph, boolean _recordStats , OrientationManager orientationManager )
+    public AccSensorEventListener( TextView outputView, TextView _stepView,LineGraphView _graph , OrientationManager orientationManager )
     {
-        context = _context;
-        recordStats = _recordStats;
+
+
         output = outputView;
         stepView = _stepView;
         graph = _graph;
@@ -115,17 +115,7 @@ public class AccSensorEventListener implements SensorEventListener {
             sampleCount++;
         } else {
 
-				/* Harmonic Mean
-				// use harmonic mean.
-				float sum = 0;
-				for (int i = 0; i < sampleCount; i++)
-				{
-					sum += 1f/azimuthSamples[i];
-				}
-				float avgDiff = 1f/(sum/(float)(maxSampleCount));
-				*/
 
-            // use truncated mean
 
             float sum = 0;
             float min = 0;
@@ -160,8 +150,8 @@ public class AccSensorEventListener implements SensorEventListener {
 
 
             // technically not  needed
-            while (currentHeading > 3.141592654) {
-                currentHeading -= 2*3.14159f ;
+            while (currentHeading > Math.PI) {
+                currentHeading -= 2*Math.PI ;
             }
             while ( currentHeading < -3.141592654){
                 currentHeading += 2*3.14159f ;

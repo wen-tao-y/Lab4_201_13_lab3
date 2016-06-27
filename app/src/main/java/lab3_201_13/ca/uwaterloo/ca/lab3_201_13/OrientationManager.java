@@ -69,11 +69,9 @@ public class OrientationManager {
         return Rvalues[0];
     }
 
-    public float radToDegrees( float radian){
-        return (float) (radian*(180.0d/Math.PI));
-    }
 
-    public OrientationManager.Direction getDirection(){
+
+    public void getDirection(){
 		/* returns the orientation of the phone ,
 		 * after appropriate filtering
 		 * and calibrations
@@ -86,7 +84,7 @@ public class OrientationManager {
 		/* updated directionLabel to current orientation */
         directionLabel.setText(String.format("Orientation: %.2f , %.2f , %.2f", Rvalues[0]*(180.0f/(3.14159)), Rvalues[1], Rvalues[2]));
 
-        return null;
+
 
     }
 }
