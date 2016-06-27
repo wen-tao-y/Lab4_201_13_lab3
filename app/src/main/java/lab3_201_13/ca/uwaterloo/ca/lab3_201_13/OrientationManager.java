@@ -25,7 +25,7 @@ public class OrientationManager {
         public void onSensorChanged(SensorEvent event) {
             // TODO Auto-generated method stub
             gravity = event.values.clone();
-            OrientationManager.this.getDirection();
+            OrientationManager.this.updateDirection();
 
         }
 
@@ -44,7 +44,7 @@ public class OrientationManager {
         public void onSensorChanged(SensorEvent event) {
             // TODO Auto-generated method stub
             mag = event.values.clone();
-            OrientationManager.this.getDirection();
+            OrientationManager.this.updateDirection();
 
         }
 
@@ -69,7 +69,7 @@ public class OrientationManager {
 
 
 
-    public void getDirection(){
+    public void updateDirection(){
 		/* returns the orientation of the phone ,
 		 * after appropriate filtering
 		 * and calibrations

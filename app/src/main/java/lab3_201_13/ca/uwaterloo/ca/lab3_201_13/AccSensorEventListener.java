@@ -247,7 +247,7 @@ public class AccSensorEventListener implements SensorEventListener {
         sensorValString = String.format("\n x: %.2f y: %.2f z: %.2f", se.values[0], se.values[1], se.values[2]);
         displacementString = String.format("\nDisplacement: \n N: %.5f E: %.5f ", distanceN , distanceE );
 
-        output.setText( displacementString  + String.valueOf(String.format("\nCurrentHeading: %f", currentHeading*(180f/3.14159f)) + sensorString+sensorValString ));
+        output.setText( displacementString  + String.format("\nCurrentHeading: %f", currentHeading*(180f/3.14159f)) + sensorString+sensorValString );
     }
 
     public void resetCounter()
