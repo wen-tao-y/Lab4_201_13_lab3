@@ -1,7 +1,6 @@
 package lab3_201_13.ca.uwaterloo.ca.lab3_201_13;
 
 import android.hardware.Sensor;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,97 +17,58 @@ import mapper.MapLoader;
 import mapper.MapView;
 
 public class Lab3_201_13 extends AppCompatActivity {
-    static LineGraphView graph;
-
-
-
-    public MapView map;
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lab3_201_13);
-        map = new MapView(getApplicationContext(),640, 600,25, 25);
-        registerForContextMenu(map);
 
-        //static MapLoader mapLoader = new MapLoader();
+        setContentView(R.layout.activity_lab3_201_13);
         LinearLayout layout = (LinearLayout) findViewById(R.id.ll);
         layout.setOrientation(LinearLayout.VERTICAL);
-
+        MapView map = new MapView(getApplicationContext(),640, 600,25, 25);
+        registerForContextMenu(map);
+        LineGraphView graph = new LineGraphView(getApplicationContext(), 100, Arrays.asList("x", "y", "z"));
+        graph.setVisibility(View.VISIBLE);
+        layout.addView(graph);
+        Button Button = (Button) findViewById(R.id.b);
+        Button.setText("Clear");
         try {
             map.setMap(MapLoader.loadMap(getExternalFilesDir(null), "E2-3344.svg"));
-
-            graph = new LineGraphView(getApplicationContext(), 100, Arrays.asList("x", "y", "z"));
-            layout.addView(graph);
-            graph.setVisibility(View.VISIBLE);
-
+            layout.addView(map);
+            map.setVisibility(View.VISIBLE);
 
         } catch ( NullPointerException e){
-            Log.d("exception", "null pointer!");
+            Log.d("EXCEPTION CAUGHT", "NO MAP FILE");
         }
-        TextView stepCount = (TextView)findViewById(R.id.label1);
-        TextView AccValuesOut = (TextView)findViewById(R.id.label2);
-        TextView orientation = (TextView)findViewById(R.id.label3);
+        TextView stepView = (TextView)findViewById(R.id.label1);
+        TextView AccView = (TextView)findViewById(R.id.label2);
+        TextView orientationView = (TextView)findViewById(R.id.label3);
 
+        OrientationUpdater OrientationUpdater=new OrientationUpdater(orientationView);
 
+        final AccSensorEventListener AccListener = new AccSensorEventListener( AccView,stepView,
+                graph, OrientationUpdater );
 
+        OrientationUpdater.GravSensorEventListener gravEventListener =  OrientationUpdater.new GravSensorEventListener();
+        OrientationUpdater.MagSensorEventListener magEventListener =  OrientationUpdater.new MagSensorEventListener();
 
-        stepCount.setTextSize(35);
+        SensorManager sensorManager = (SensorManager) getApplicationContext().getSystemService(SENSOR_SERVICE);
+        Sensor accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        Sensor gravSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        Sensor magSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-        // Create sensor manager and Sensor references for each applicable sensor
-        final SensorManager sensorManager = (SensorManager) getApplicationContext().getSystemService(SENSOR_SERVICE);
-        final Sensor AccSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        final Sensor AccerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        final Sensor magSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
-        OrientationManager orientationManager = new OrientationManager(orientation);
-
-        final SensorEventListener AccListener = new AccSensorEventListener( AccValuesOut,stepCount,
-                graph, orientationManager );
-
-        final OrientationManager.GravSensorEventListener gravEventListener =  orientationManager.new GravSensorEventListener();
-        final OrientationManager.MagSensorEventListener magEventListener =  orientationManager.new MagSensorEventListener();
-
-        sensorManager.registerListener(AccListener, AccSensor, SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(gravEventListener, AccerometerSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(AccListener, accSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(gravEventListener, gravSensor, SensorManager.SENSOR_DELAY_GAME);
         sensorManager.registerListener(magEventListener, magSensor, SensorManager.SENSOR_DELAY_GAME);
-
-        // add clear button for class
-        final Button clearButton = (Button) findViewById(R.id.b);
-        clearButton.setText("Clear");
-
-        clearButton.setOnClickListener(new View.OnClickListener() {
+        Button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                ((AccSensorEventListener) AccListener).clearRecords();
-                ((AccSensorEventListener) AccListener).resetCounter();
+                AccListener.clear();
             }
         });
 
-        // add clear button for class
-
-
-
-
-
-
-        sensorManager.registerListener(AccListener, AccSensor, SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(gravEventListener, AccerometerSensor, SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(magEventListener, magSensor, SensorManager.SENSOR_DELAY_GAME);
-
-
-
-
-
-
-
-
-        layout.addView(map);
-        map.setVisibility(View.VISIBLE);
-
 
     }
 
     }
-

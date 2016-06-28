@@ -9,14 +9,14 @@ import android.widget.TextView;
 /**
  * Created by ywt on 6/24/16.
  */
-public class OrientationManager {
+public class OrientationUpdater {
 
 
 
-    private TextView directionLabel;
+    private TextView outputView;
     private float[] R = new float[9];
-    float[] Rvalues = new float[3];
-    private float[] gravity = new float[3];
+    float[] values = new float[3];
+    private float[] grav = new float[3];
     private float[] mag = new float[3];
 
     public class GravSensorEventListener implements SensorEventListener {
@@ -24,8 +24,8 @@ public class OrientationManager {
         @Override
         public void onSensorChanged(SensorEvent event) {
             // TODO Auto-generated method stub
-            gravity = event.values.clone();
-            OrientationManager.this.updateDirection();
+            grav = event.values.clone();
+            OrientationUpdater.this.updateDirection();
 
         }
 
@@ -44,7 +44,7 @@ public class OrientationManager {
         public void onSensorChanged(SensorEvent event) {
             // TODO Auto-generated method stub
             mag = event.values.clone();
-            OrientationManager.this.updateDirection();
+            OrientationUpdater.this.updateDirection();
 
         }
 
@@ -56,31 +56,22 @@ public class OrientationManager {
 
 
     }
-    public OrientationManager( TextView directionLabel){
-        this.directionLabel = directionLabel;
+    public OrientationUpdater( TextView outputView){
+        this.outputView = outputView;
 
     }
 
     public float getAzimuth(){
-        // return the value of the azimuth reading in radians
-        // 0 is north, positive for clockwise rotations.
-        return Rvalues[0];
+        return values[0];
     }
 
 
 
     public void updateDirection(){
-		/* returns the orientation of the phone ,
-		 * after appropriate filtering
-		 * and calibrations
-		 */
-        SensorManager.getRotationMatrix(R, null, gravity, mag);
-        SensorManager.getOrientation(R, Rvalues);
 
-
-
-		/* updated directionLabel to current orientation */
-        directionLabel.setText(String.format("Orientation: %.2f , %.2f , %.2f", Rvalues[0]*(180.0f/(3.14159)), Rvalues[1], Rvalues[2]));
+        SensorManager.getRotationMatrix(R, null, grav, mag);
+        SensorManager.getOrientation(R, values);
+        outputView.setText(String.format("Orientation: %.2f , %.2f , %.2f", values[0]*(180.0f/(3.14159)), values[1], values[2]));
 
 
     }

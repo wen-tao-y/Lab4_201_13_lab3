@@ -55,9 +55,9 @@ public class LineGraphView extends View
 	
 	private Paint graphPaint = new Paint();
 	
-	private final int WIDTH = 400;
-	private final int HEIGHT = 400;
-	private final int AXIS_WIDTH = 100;
+	private final int WIDTH = 1200;
+	private final int HEIGHT = 850;
+	private final int AXIS_WIDTH = 50;
 	
 	private float xScale, yScale;
 	private final int maxDataWidth;
