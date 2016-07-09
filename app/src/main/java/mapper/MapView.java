@@ -30,6 +30,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.os.Handler;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
@@ -84,7 +85,7 @@ public class MapView extends View
     private static final int START_POINT_COLOR_INDEX = 4;
     private static final int LABELlED_POINT_COLOR_INDEX = 5;
     
-    NavigationalMap map = new NavigationalMap();
+    public NavigationalMap map = new NavigationalMap();
     PointF scale;
     
     /**
@@ -359,7 +360,7 @@ public class MapView extends View
         
         if(id == SET_LOCATION_ID) {
             startPoint.set(selectPoint);
-            
+            Log.d("", startPoint.toString());
             for(PositionListener listen : listeners)
                 listen.originChanged(this, startPoint);
         } else if(id == SET_DESTINATION_ID) {
