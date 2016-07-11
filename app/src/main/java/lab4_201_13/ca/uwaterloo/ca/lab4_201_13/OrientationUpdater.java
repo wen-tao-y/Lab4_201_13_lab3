@@ -1,4 +1,4 @@
-package lab3_201_13.ca.uwaterloo.ca.lab3_201_13;
+package lab4_201_13.ca.uwaterloo.ca.lab4_201_13;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

@@ -12,7 +12,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="lab3_201_13.uwaterloo.ca.lab3_201_13.lab3_201_13"
+        tools:context="lab4_201_13.uwaterloo.ca.lab4_201_13.lab4_201_13"
         android:id="@+id/ll">
 
         <TextView

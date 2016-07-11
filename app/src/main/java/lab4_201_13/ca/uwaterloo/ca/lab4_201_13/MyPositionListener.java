@@ -1,4 +1,4 @@
-package lab3_201_13.ca.uwaterloo.ca.lab3_201_13;
+package lab4_201_13.ca.uwaterloo.ca.lab4_201_13;
 
 import android.graphics.PointF;
 
@@ -11,8 +11,8 @@ import mapper.PositionListener;
  * Created by ywt on 7/9/16.
  */
 public class MyPositionListener implements PositionListener{
-    Graph g;
-    public MyPositionListener(Graph g){
+    lab4_201_13.ca.uwaterloo.ca.lab4_201_13.Graph g;
+    public MyPositionListener(lab4_201_13.ca.uwaterloo.ca.lab4_201_13.Graph g){
         this.g=g;
     }
     @Override

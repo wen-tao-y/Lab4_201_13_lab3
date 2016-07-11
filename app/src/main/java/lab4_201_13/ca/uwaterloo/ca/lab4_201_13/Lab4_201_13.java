@@ -1,4 +1,4 @@
-package lab3_201_13.ca.uwaterloo.ca.lab3_201_13;
+package lab4_201_13.ca.uwaterloo.ca.lab4_201_13;
 
 import android.graphics.PointF;
 import android.hardware.Sensor;
@@ -16,18 +16,19 @@ import android.widget.TextView;
 import java.util.Arrays;
 
 import ca.uwaterloo.sensortoy.LineGraphView;
+import lab4_201_13.ca.uwaterloo.ca.lab4_201_13.R;
 import mapper.MapLoader;
 import mapper.MapView;
 import mapper.NavigationalMap;
 
-public class Lab3_201_13 extends AppCompatActivity {
+public class Lab4_201_13 extends AppCompatActivity {
     MapView map;
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_lab3_201_13);
+        setContentView(R.layout.activity_lab4_201_13);
         LinearLayout layout = (LinearLayout) findViewById(R.id.ll);
         layout.setOrientation(LinearLayout.VERTICAL);
         map = new MapView(getApplicationContext(),1280, 1200,50, 50);
@@ -61,7 +62,7 @@ public class Lab3_201_13 extends AppCompatActivity {
         Log.d("", String.valueOf(map.map.calculateIntersections(map.getOriginPoint(),map.getDestinationPoint())));
 
 
-        OrientationUpdater OrientationUpdater=new OrientationUpdater(orientationView);
+        lab4_201_13.ca.uwaterloo.ca.lab4_201_13.OrientationUpdater OrientationUpdater=new OrientationUpdater(orientationView);
 
         final AccSensorEventListener AccListener = new AccSensorEventListener( AccView,stepView,
                 graph, OrientationUpdater,g );
